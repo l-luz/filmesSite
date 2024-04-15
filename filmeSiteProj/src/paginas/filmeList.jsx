@@ -11,13 +11,21 @@ const IntanciaFilme = ({ filme }) => {
     return <>
         <Card sx={{ width: 190, height: 370 }} >
             <Link to={`/filme/${filme.id}`}>
-
-                <CardMedia
-                    component="img"
-                    alt={filme.title}
-                    sx={{ maxHeight: 300 }}
-                    image={`https://image.tmdb.org/t/p/w500${filme.poster_path}`}
-                />
+                {filme.poster_path != null ?
+                    <CardMedia
+                        component="img"
+                        alt={filme.title}
+                        sx={{ height: 300 }}
+                        image={`https://image.tmdb.org/t/p/w500${filme.poster_path}`}
+                    />
+                    :
+                    <CardMedia
+                        component="img"
+                        alt={filme.title}
+                        sx={{ height: 300 }}
+                        image={"https://lightwidget.com/wp-content/uploads/localhost-file-not-found.jpg"}
+                    />
+                }
             </Link>
             <Badge
                 badgeContent={<CircularProgressWithLabel value={filme.vote_average * 10} />}
@@ -27,7 +35,6 @@ const IntanciaFilme = ({ filme }) => {
                     horizontal: 'left',
                 }}
             />
-
             <CardContent>
                 <Typography variant="inherit" color="text.primary">
                     <b>
@@ -43,8 +50,9 @@ const IntanciaFilme = ({ filme }) => {
 }
 
 const ListaFilmes = ({ filmes }) => {
+    
     return <>
-        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid container sx={{ justifyContent: "center" }} spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
             {filmes.map((movie, index) => (
                 <Grid item key={index}>
                     <IntanciaFilme filme={movie} />

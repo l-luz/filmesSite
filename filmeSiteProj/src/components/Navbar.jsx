@@ -1,4 +1,4 @@
-import  {React, useState} from 'react';
+import { React, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,6 +11,10 @@ import Badge from '@mui/material/Badge';
 import SearchIcon from '@mui/icons-material/Search';
 import MailIcon from '@mui/icons-material/Mail';
 import { getHeaders } from '../header';
+import { Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+import MultipleSelectCheckbox from './MultipleSelectCheckbox';
+
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -44,19 +48,41 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-function NavBar({setFilmes}) {
+export default function NavBar({ setFilmes, generos }) {
     const [query, setQuery] = useState("");
-    const search = (event) => {
-        console.log(query)
+    const [selGeneros, setSelGeneros] = useState([]);
+
+    const searchTitle = (event) => {
         const options = {
             method: 'GET',
             headers: getHeaders()
-          };
-          fetch(`https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=1`, options)
+        };
+        fetch(`https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US`, options)
             .then(res => res.json())
             .then(res => {
                 setFilmes(res.results);
                 console.log(res.results)
+            })
+            .catch(err => console.error(err));
+    }
+
+    const searchGenre = (event) => {
+        var genres = "";
+
+        selGeneros.forEach(function (el) {
+            genres += el + ",";
+        });
+        const options = {
+            method: 'GET',
+            headers: getHeaders()
+        };
+
+        fetch(`https://api.themoviedb.org/3/discover/movie?include_adult=false&with_genres=${genres}`, options)
+            .then(res => res.json())
+            .then(res => {
+                setFilmes(res.results);
+                console.log(res.results);
+                setQuery("");
             })
             .catch(err => console.error(err));
     }
@@ -104,11 +130,10 @@ function NavBar({setFilmes}) {
                                 px: 0,
                             }}
                         >
-                            <Typography color={'black'} >
-                                <b>
-                                    Top Filmes
-                                </b>
+                            <Typography style={{ margin: "5px" }} color={'black'} to={"/"} component={Link} >
+                                <b>Top Filmes</b>
                             </Typography>
+
                             <Box sx={{ flexGrow: 1 }} />
 
                             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -117,9 +142,8 @@ function NavBar({setFilmes}) {
                                         placeholder="Search…"
                                         inputProps={{ 'aria-label': 'search' }}
                                         onChange={(e) => setQuery(e.target.value)}
-                                
                                     />
-                                    <IconButton onClick={(e) => search(e)}>
+                                    <IconButton onClick={(e) => searchTitle(e)}>
                                         <SearchIcon />
                                     </IconButton>
                                 </Search>
@@ -127,16 +151,9 @@ function NavBar({setFilmes}) {
                             <Box sx={{ flexGrow: 1 }} />
 
                             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                                    <Badge badgeContent={4} color="error">
-                                        <MailIcon />
-                                    </Badge>
-                                </IconButton>
-                                <IconButton
-                                    size="large"
-                                    aria-label="show 17 new notifications"
-                                    color="inherit"
-                                >
+                                <MultipleSelectCheckbox title={"Gêneros"} options={generos} setSelected={setSelGeneros} />
+                                <IconButton onClick={(e) => searchGenre(e, searchGenre)}>
+                                    <SearchIcon />
                                 </IconButton>
                             </Box>
                         </Box>
@@ -148,4 +165,3 @@ function NavBar({setFilmes}) {
 }
 
 
-export default NavBar;
