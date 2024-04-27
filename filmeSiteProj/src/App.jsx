@@ -11,25 +11,16 @@ import { getHeaders } from './header';
 const App = () => {
     const [filmes, setFilmes] = useState([]);
     const [generos, setGeneros] = useState([]);
+    const [detail, setDetail] = useState(false);
+    const [query, setQuery] = useState("");
+
     useEffect(() => {
-        const filme_opt = {
+        const options = {
             method: 'GET',
             headers: getHeaders()
         };
 
-        fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US&include_adult=false', filme_opt)
-            .then(res => res.json())
-            .then(res => {
-                setFilmes(res.results);
-                console.log(res.results)
-            })
-            .catch(err => console.error(err));
-        const genero_opt = {
-            method: 'GET',
-            headers: getHeaders()
-        };
-
-        fetch('https://api.themoviedb.org/3/genre/movie/list?language=en&include_adult=false', genero_opt)
+        fetch('https://api.themoviedb.org/3/genre/movie/list?language=en&include_adult=false', options)
             .then(res => res.json())
             .then(res => {
                 setGeneros(res.genres);
@@ -37,17 +28,17 @@ const App = () => {
             })
             .catch(err => console.error(err));
 
-    }, [])
+    }, []);
 
     return (
         <>
             <Router>
-                <Navbar setFilmes={setFilmes} generos={generos} />
+                <Navbar setFilmes={setFilmes} generos={generos} detail={detail}/>
                 <div style={{ margin: '70px' }}></div>
                 <Container>
                     <Routes>
-                        <Route index element={<ListaFilmes filmes={filmes} />} />
-                        <Route path='/filme/:filmeId' element={<InfoFilme generos={generos}/>} />
+                        <Route index element={<ListaFilmes filmes={filmes} setFilmes={setFilmes} setDetail={setDetail} detail={detail} />} />
+                        <Route path='/filme/:filmeId' element={<InfoFilme generos={generos} setDetail={setDetail} />} />
                     </Routes>
                 </Container>
             </Router>

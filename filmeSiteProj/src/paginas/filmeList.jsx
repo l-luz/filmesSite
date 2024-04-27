@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -6,6 +7,7 @@ import Grid from '@mui/material/Grid'
 import Badge from '@mui/material/Badge'
 import CircularProgressWithLabel from '../components/ProgressRating';
 import { Link } from "react-router-dom";
+import { getHeaders } from '../header';
 
 const IntanciaFilme = ({ filme }) => {
     return <>
@@ -49,10 +51,29 @@ const IntanciaFilme = ({ filme }) => {
     </>
 }
 
-const ListaFilmes = ({ filmes }) => {
-    
+const ListaFilmes = ({ filmes, setFilmes, setDetail, detail }) => {
+    useEffect(() => {
+        const filme_opt = {
+            method: 'GET',
+            headers: getHeaders()
+        };
+
+        fetch('https://api.themoviedb.org/3/trending/movie/day?language=en-US&include_adult=false', filme_opt)
+            .then(res => res.json())
+            .then(res => {
+                setFilmes(res.results);
+                console.log(res.results)
+            })
+            .catch(err => console.error(err));
+            setDetail(false);
+    }, [])
+
     return <>
-        <Grid container sx={{ justifyContent: "center" }} spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid container
+            sx={{ justifyContent: "center" }}
+            spacing={{ xs: 2, md: 3 }}
+            columns={{ xs: 4, sm: 8, md: 12 }}
+        >
             {filmes.map((movie, index) => (
                 <Grid item key={index}>
                     <IntanciaFilme filme={movie} />

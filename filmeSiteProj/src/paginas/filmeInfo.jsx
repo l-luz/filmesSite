@@ -8,7 +8,7 @@ import Container from '@mui/material/Container';
 import MainFeaturedPost from '../components/MainFeaturePost';
 
 
-export default function InfoFilme({ filme }) {
+export default function InfoFilme({ filmem, setDetail }) {
     const { filmeId } = useParams();
     const [info, setInfo] = useState({});
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function InfoFilme({ filme }) {
                 console.log(res);
             })
             .catch(err => console.error(err));
-
+            setDetail(true);
     }, []);
 
     const setReleaseYear = (date) => {

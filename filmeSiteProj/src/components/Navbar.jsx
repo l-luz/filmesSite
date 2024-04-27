@@ -7,11 +7,8 @@ import Typography from '@mui/material/Typography';
 import { styled, alpha } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
 import SearchIcon from '@mui/icons-material/Search';
-import MailIcon from '@mui/icons-material/Mail';
 import { getHeaders } from '../header';
-import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import MultipleSelectCheckbox from './MultipleSelectCheckbox';
 
@@ -48,7 +45,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-export default function NavBar({ setFilmes, generos }) {
+export default function NavBar({ setFilmes, generos, detail }) {
     const [query, setQuery] = useState("");
     const [selGeneros, setSelGeneros] = useState([]);
 
@@ -64,6 +61,9 @@ export default function NavBar({ setFilmes, generos }) {
                 console.log(res.results)
             })
             .catch(err => console.error(err));
+            if (detail) {
+                window.location.href = '/';
+            }
     }
 
     const searchGenre = (event) => {
@@ -85,6 +85,9 @@ export default function NavBar({ setFilmes, generos }) {
                 setQuery("");
             })
             .catch(err => console.error(err));
+            if (detail) {
+                window.location.href = '/';
+            }
     }
 
     return (
